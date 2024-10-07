@@ -141,18 +141,7 @@ function Home() {
         setFilteredItems(updatedTodoItems);
     };
 
-//useEffect Store checkbox
-    // useEffect(() => {
-    //     const storedChecked = localStorage.getItem('checked') === 'true';
-    //     setIsChecked(storedChecked);
-    //   }, []);
-
-    // const handleCheckBox = (event: { target: { checked: any; }; }) => {
-    //     const checked = event.target.checked;
-    //     setIsChecked(checked);
-    //     localStorage.setItem('checkboxChecked', checked);
-    //   };
-
+    //Function to handle Checkbox for an item
     const handleCheckBox = (id:number) =>{
         const newTodoList = todoItems.map(item =>{
             if(item.id==id){
@@ -165,75 +154,84 @@ function Home() {
         setFilteredItems(newTodoList);
     };
 
-     // Handle the search input change
+     // Function to handle Search functinality
     const handleSearch = (value: string) => {
         setSearchValue(value); // Update search input
     };
 
+    // Function to handle Drag and Drop Functionality
+    // handleDragStart function is called when we start dragging item
     const handleDragStart = (id:number)=>{
         setDraggedId(id);
         // console.log(id)
     };
 
+    // handleDragStop function is called when we drop the item over other item
     const handleDrop = (id:number)=>{
+        //Checking 1.if the dragged item is drop anywhere 2.If the drag item drop at same place
         if(draggedId === null || draggedId == id) 
             return;
 
-        const draggedTodoItems = [...todoItems];
-        const draggedPosition = draggedTodoItems.findIndex(item => item.id === draggedId);
-        const draggedOverPosition = draggedTodoItems.findIndex(item => item.id === id);
+        const draggedTodoItems = [...todoItems]; //Providing todoItems using Spread Operator
+        const draggedPosition = draggedTodoItems.findIndex(item => item.id === draggedId); //Finding position of dragged item
+        const draggedOverPosition = draggedTodoItems.findIndex(item => item.id === id); //Finding position of item on which dragged item is drop
 
+        //Logic for Drag element and other will be sort 
         // const [draggedItem] = draggedTodoItems.splice(draggedPosition, 1); // Remove the dragged item
         // draggedTodoItems.splice(draggedOverPosition, 0, draggedItem); // Insert it at the target index
 
+
+        //Logic for Swapping the id of dragged item and dragged over item
         const draggedItem = draggedTodoItems[draggedPosition];
         draggedTodoItems[draggedPosition] = draggedTodoItems[draggedOverPosition];
         draggedTodoItems[draggedOverPosition] = draggedItem
 
-        setTodoItems(draggedTodoItems);
-        localStorage.setItem("todoItems", JSON.stringify(draggedTodoItems));
+        setTodoItems(draggedTodoItems);     //Updating the TodoItems
+        localStorage.setItem("todoItems", JSON.stringify(draggedTodoItems));    //For storing permenant position
         setDraggedId(null); // Reset the dragged item
     }
 
-    const handleSortAsc = ()=> {
-        const sortAscending = [...todoItems].sort((a,b) =>{ 
-            return new Date(a.createTime).getTime() - new Date(b.createTime).getTime()
+
+    //handle Ascending Sort Function
+    const handleSortAsc = ()=> {                                                
+        const sortAscending = [...todoItems].sort((a,b) =>{                             //Using Sort Function
+            return new Date(a.createTime).getTime() - new Date(b.createTime).getTime()  //Conversion of string into time
         });
 
-        setTodoItems(sortAscending);
+        setTodoItems(sortAscending);    //Updating the TodoItems
     }
 
+    //handle Descending Sort Function
     const handleSortDesc = ()=> {
-        const sortDescending = [...todoItems].sort((a,b) =>{ 
-            return new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
+        const sortDescending = [...todoItems].sort((a,b) =>{                            //Using Sort Function
+            return new Date(b.createTime).getTime() - new Date(a.createTime).getTime()  //Conversion of string into time
         });
 
-        setTodoItems(sortDescending);
+        setTodoItems(sortDescending);       //Updating the TodoItems
     }
 
+
+    //handle Add sub item function
     const handleAddSubItem = (id:number)=>{
         console.log("SubItem");
     }
 
     return (
+        // Main Container
         <div className="relative flex flex-col h-screen bg-black">
-            {/* <div className="fixed top-0 left-0 right-0 w-full bg-white p-4 mx-auto z-50">
-                <h1 className="text-center">Sarchbar</h1>
-            </div> */}
-
-            {/* <div className="fixed top-0 left-0 right-0 w-full bg-white p-4 max-h-[88px] z-50"> */}
+            {/* Navbar Container */}
             <div className="fixed top-0 left-0 right-0  bg-black p-4 z-10">
-                {/* <TodoSearch onSearch={handleSearch}/> */}
+                {/* TodoNavbar Component */}
                 <TodoNavbar onSearch={handleSearch} onSortAscending={handleSortAsc} onSortDescending={handleSortDesc}></TodoNavbar>
             </div>
 
-            {/* className="flex-grow mb-20 overflow-auto" */}
-            {/* <div className="mt-17 mb-16 overflow-y-auto" style={{ height: 'calc(100vh - 150px)' }}> */}
+            {/* Todo items List Container */}
             <div className="flex-1 overflow-y-auto pt-16 pb-16 px-4" style={{ height: 'calc(100vh - 150px)' }}>
                 {/* TodoList Component */}
                 <TodoList todoItems={filteredItems} onChecked={handleCheckBox} onAdd={handleAddSubItem} onEdit={handleEditButton} onDelete={handleDeleteButton} onDateTimeChange={handleDateTimeChange} onDragStart={handleDragStart} onDrop={handleDrop} />
             </div>
-            {/* <div className="fixed bottom-0 left-0 w-full bg-white p-4 max-h-[88px] z-50"> */}
+
+            {/* Todo Items Input Container */}
             <div className="fixed bottom-0 left-0 right-0 bg-black p-4">
                 {/* TodoInput field Component */}
                 <TodoInput todoName={todoName} setTodoName={setTodoName} onEnterKey={onEnterKey} />

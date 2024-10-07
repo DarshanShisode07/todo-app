@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import TodoSearch from './TodoSearch'
-import SortingButtons from './SortingButtons';
+import SortingButtons from './SortingButtons'; 
 
 interface TodoNavbarProps{
     onSearch: (value:string)=>void;
@@ -10,8 +10,12 @@ interface TodoNavbarProps{
 
 const TodoNavbar: FC<TodoNavbarProps>  = ({onSearch, onSortAscending, onSortDescending}) => {
   return (
+    //Navbar Container
     <div className='flex'>
-      <TodoSearch onSearch={onSearch}></TodoSearch>
+        {/* Search Component */}
+      <TodoSearch onSearch={onSearch}></TodoSearch> 
+
+      {/* Sorting buttons Components                         */}
       <SortingButtons onSortAscending={onSortAscending} onSortDescending={onSortDescending}></SortingButtons>
     </div>
   )
